@@ -1,5 +1,6 @@
 from app import app
-from flask import render_template
+from flask import render_template, flash, redirect, url_for
+from app.forms import LoginForm
 
 @app.route('/')
 @app.route('/index')
@@ -28,31 +29,13 @@ def index():
 # 	</body>
 # </html>'''
 
+@app.route('/login', methods=["GET", "POST"])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        flash('Login requested for user {}, remember me={}'.format(
+            form.username.data, form.remember_me.data))
+        return redirect(url_for('index'))
+    return render_template('login.html', title='Sign In', form=form)
+    
 
-# create an about page that has movies inside it and user can view (about.html) those movie names
-@app.route('/about')
-def about():
-	users = {'username': ['Yashwanth', 'Sawanth', 'Venkata Sai', 'Sainath', 'Piyush', 'Hitesh']}
-	movies = [ 
-		{
-			'movie': 'Bahubhali'
-			'user': users[username][0]
-		},
-		{
-			'movie': 'Pushpa The Rise',
-			'user': users[username][1]
-		},
-		{
-			'movie': 'Pushpa The Rule'
-			'user': users[username][2]
-		},
-		{
-			'movie': 'Pushpa The Rampage',
-			'user': users[username][3]
-		},
-		{
-			'movie': 'Game Changer',
-			'user': users[username][4]
-		},
-	]
-	return render_template('about.html', title="about page",users=users, movies=movies)
